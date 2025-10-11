@@ -3,6 +3,7 @@
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\CourseUserController;
+use App\Http\Controllers\AcademicCourseController; // ← AÑADE ESTA LÍNEA
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,5 +33,8 @@ Route::get('/course-user/users', [CourseUserController::class, 'usersWithCourses
 Route::get('/course-user/courses', [CourseUserController::class, 'coursesWithUsers'])->name('course-user.courses');
 Route::post('/course-user/enroll', [CourseUserController::class, 'enrollUser'])->name('course-user.enroll');
 Route::post('/course-user/unenroll', [CourseUserController::class, 'unenrollUser'])->name('course-user.unenroll');
+
+// === RUTA CRUD PARA CURSOS ACADÉMICOS (Nueva actividad) ===
+Route::resource('academic-courses', AcademicCourseController::class)->middleware('auth');
 
 require __DIR__.'/auth.php';

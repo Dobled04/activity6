@@ -9,8 +9,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            AcademicCourseSeeder::class,
-            CourseUserSeeder::class,
+            RobotKitSeeder::class, // Primero los kits de robótica
+            AcademicCourseSeeder::class, // Luego los cursos
+            CourseUserSeeder::class, // Finalmente las relaciones
         ]);
     }
 }

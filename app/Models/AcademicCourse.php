@@ -16,7 +16,8 @@ class AcademicCourse extends Model
         'credits',
         'start_date',
         'end_date',
-        'is_active'
+        'is_active',
+        'robot_kit_id' // NUEVO CAMPO
     ];
 
     protected $casts = [
@@ -25,12 +26,15 @@ class AcademicCourse extends Model
         'is_active' => 'boolean'
     ];
 
-    /**
-     * Relación muchos a muchos con usuarios
-     */
     public function users()
     {
         return $this->belongsToMany(User::class, 'course_user')
                     ->withTimestamps();
+    }
+
+    // NUEVA RELACIÓN
+    public function robotKit()
+    {
+        return $this->belongsTo(RobotKit::class);
     }
 }

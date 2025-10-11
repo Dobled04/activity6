@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\AcademicCourse;
+use App\Models\RobotKit;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -19,6 +20,7 @@ class AcademicCourseSeeder extends Seeder
                 'start_date' => '2024-01-15',
                 'end_date' => '2024-05-15',
                 'is_active' => true,
+                'robot_kit_id' => 1 // Asignar el kit básico
             ],
             [
                 'course_name' => 'Database Systems',
@@ -28,6 +30,7 @@ class AcademicCourseSeeder extends Seeder
                 'start_date' => '2024-01-15',
                 'end_date' => '2024-05-15',
                 'is_active' => true,
+                'robot_kit_id' => 2 // Asignar el kit avanzado
             ],
             [
                 'course_name' => 'Web Development',
@@ -37,6 +40,7 @@ class AcademicCourseSeeder extends Seeder
                 'start_date' => '2024-01-15',
                 'end_date' => '2024-05-15',
                 'is_active' => true,
+                'robot_kit_id' => 3 // Asignar el kit IoT
             ],
             [
                 'course_name' => 'Software Engineering',
@@ -46,6 +50,7 @@ class AcademicCourseSeeder extends Seeder
                 'start_date' => '2024-01-15',
                 'end_date' => '2024-05-15',
                 'is_active' => true,
+                'robot_kit_id' => 4 // Asignar el kit de drones
             ],
             [
                 'course_name' => 'Data Structures',
@@ -55,15 +60,12 @@ class AcademicCourseSeeder extends Seeder
                 'start_date' => '2024-01-15',
                 'end_date' => '2024-05-15',
                 'is_active' => true,
+                'robot_kit_id' => null // Sin kit asignado
             ]
         ];
 
         foreach ($courses as $course) {
-            // Usar updateOrCreate para evitar duplicados
-            AcademicCourse::updateOrCreate(
-                ['course_code' => $course['course_code']], // Buscar por código único
-                $course // Datos a actualizar/crear
-            );
+            AcademicCourse::create($course);
         }
     }
 }
