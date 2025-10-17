@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AcademicCourse;
 use App\Models\RobotKit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AcademicCourseController extends Controller
 {
@@ -22,7 +23,7 @@ class AcademicCourseController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'course_name' => 'required|string|max:255',
             'course_code' => 'required|string|max:50|unique:academic_courses',
             'description' => 'nullable|string',
@@ -30,10 +31,17 @@ class AcademicCourseController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'is_active' => 'boolean',
-            'robot_kit_id' => 'nullable|exists:robot_kits,id'
+            'robot_kit_id' => 'nullable|exists:robot_kits,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        AcademicCourse::create($request->all());
+        // Procesar la imagen si se subió
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('courses', 'public');
+            $validated['image'] = $imagePath;
+        }
+
+        AcademicCourse::create($validated);
 
         return redirect()->route('academic-courses.index')
                          ->with('success', 'Curso creado exitosamente.');
@@ -41,6 +49,7 @@ class AcademicCourseController extends Controller
 
     public function show(AcademicCourse $academicCourse)
     {
+        $academicCourse->load('robotKit');
         return view('academic-courses.show', compact('academicCourse'));
     }
 
@@ -52,7 +61,7 @@ class AcademicCourseController extends Controller
 
     public function update(Request $request, AcademicCourse $academicCourse)
     {
-        $request->validate([
+        $validated = $request->validate([
             'course_name' => 'required|string|max:255',
             'course_code' => 'required|string|max:50|unique:academic_courses,course_code,' . $academicCourse->id,
             'description' => 'nullable|string',
@@ -60,10 +69,22 @@ class AcademicCourseController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'is_active' => 'boolean',
-            'robot_kit_id' => 'nullable|exists:robot_kits,id'
+            'robot_kit_id' => 'nullable|exists:robot_kits,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $academicCourse->update($request->all());
+        // Procesar la imagen si se subió
+        if ($request->hasFile('image')) {
+            // Eliminar imagen anterior si existe
+            if ($academicCourse->image) {
+                Storage::disk('public')->delete($academicCourse->image);
+            }
+            
+            $imagePath = $request->file('image')->store('courses', 'public');
+            $validated['image'] = $imagePath;
+        }
+
+        $academicCourse->update($validated);
 
         return redirect()->route('academic-courses.index')
                          ->with('success', 'Curso actualizado exitosamente.');
@@ -71,6 +92,11 @@ class AcademicCourseController extends Controller
 
     public function destroy(AcademicCourse $academicCourse)
     {
+        // Eliminar imagen si existe
+        if ($academicCourse->image) {
+            Storage::disk('public')->delete($academicCourse->image);
+        }
+
         $academicCourse->delete();
 
         return redirect()->route('academic-courses.index')

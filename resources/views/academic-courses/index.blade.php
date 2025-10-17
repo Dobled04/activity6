@@ -23,6 +23,7 @@
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Código</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imagen</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Créditos</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kit de Robótica</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
@@ -40,6 +41,17 @@
                                     <td class="px-6 py-4">
                                         <div class="font-medium text-gray-900">{{ $course->course_name }}</div>
                                         <div class="text-sm text-gray-500 truncate max-w-xs">{{ $course->description }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($course->image)
+                                            <img src="{{ Storage::url($course->image) }}" 
+                                                 alt="Imagen del curso {{ $course->course_name }}"
+                                                 class="h-12 w-12 rounded-full object-cover">
+                                        @else
+                                            <div class="h-12 w-12 bg-gray-200 rounded-full flex items-center justify-center">
+                                                <span class="text-gray-500 text-xs">Sin imagen</span>
+                                            </div>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-sm">

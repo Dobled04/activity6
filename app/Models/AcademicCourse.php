@@ -17,7 +17,8 @@ class AcademicCourse extends Model
         'start_date',
         'end_date',
         'is_active',
-        'robot_kit_id' // NUEVO CAMPO
+        'robot_kit_id',
+        'image' // NUEVO CAMPO
     ];
 
     protected $casts = [
@@ -32,9 +33,17 @@ class AcademicCourse extends Model
                     ->withTimestamps();
     }
 
-    // NUEVA RELACIÓN
     public function robotKit()
     {
         return $this->belongsTo(RobotKit::class);
+    }
+
+    // NUEVO MÉTODO: Obtener URL de la imagen
+    public function getImageUrlAttribute()
+    {
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+        return asset('images/default-course.jpg');
     }
 }
